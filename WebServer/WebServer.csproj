@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebServerConfig\WebServerConfig.csproj" />
+    <ProjectReference Include="..\Extensions\Extensions.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
