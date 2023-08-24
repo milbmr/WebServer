@@ -31,4 +31,17 @@ public static class ExtensionMethods
 
         return output;
     }
+
+    public static string LeftOf(this string src, string s)
+    {
+        string output = src;
+        int idx = src.IndexOf(s);
+
+        if (idx != -1)
+        {
+            output = src[..idx];
+        }
+
+        return output;
+    }
 }

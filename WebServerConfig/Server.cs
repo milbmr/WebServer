@@ -81,14 +81,37 @@ public class Server
     {
         HttpListenerContext context = await listener.GetContextAsync();
         maxThreads!.Release();
-
         Log(context.Request);
+
+        HttpListenerRequest request = context.Request;
+        string path = request.RawUrl!.LeftOf("?");
+        string method = request.HttpMethod;
+        string parms = request.RawUrl!.RightOf("?");
+        Dictionary<string, string> parameters = GetKeyValuePairs(parms);
 
         string response = "hello browser";
         byte[] encoded = Encoding.UTF8.GetBytes(response);
         context.Response.ContentLength64 = encoded.Length;
         context.Response.OutputStream.Write(encoded, 0, encoded.Length);
         context.Response.OutputStream.Close();
+    }
+
+    private Dictionary<string, string> GetKeyValuePairs(
+        string parms,
+        Dictionary<string, string> keyValues = null!
+    )
+    {
+        keyValues ??= new Dictionary<string, string>();
+        if (parms.Length > 0)
+        {
+            IEnumerable<string> keysV = parms.Split("&");
+            foreach (var v in keysV)
+            {
+                keyValues[v.LeftOf("=")] = Uri.UnescapeDataString(v.RightOf("="));
+            }
+        }
+
+        return keyValues;
     }
 
     private void Log(HttpListenerRequest request)
